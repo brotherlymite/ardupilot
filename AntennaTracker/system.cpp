@@ -3,8 +3,23 @@
 // mission storage
 static const StorageAccess wp_storage(StorageManager::StorageMission);
 
-void Tracker::init_ardupilot()
+static void mavlink_delay_cb_static()
 {
+    tracker.mavlink_delay_cb();
+}
+
+void Tracker::init_tracker()
+{
+    // initialise console serial port
+    serial_manager.init_console();
+
+    hal.console->printf("\n\nInit %s\n\nFree RAM: %u\n",
+                        AP::fwversion().fw_string,
+                        (unsigned)hal.util->available_memory());
+
+    // Check the EEPROM format version before loading any parameters from EEPROM
+    load_parameters();
+
     // initialise stats module
     stats.init();
 
@@ -16,7 +31,9 @@ void Tracker::init_ardupilot()
     // setup first port early to allow BoardConfig to report errors
     gcs().setup_console();
 
-    register_scheduler_delay_callback();
+    // Register mavlink_delay_cb, which will run anytime you have
+    // more than 5ms remaining in your call to hal.scheduler->delay
+    hal.scheduler->register_delay_callback(mavlink_delay_cb_static, 5);
 
     BoardConfig.init();
 #if HAL_WITH_UAVCAN

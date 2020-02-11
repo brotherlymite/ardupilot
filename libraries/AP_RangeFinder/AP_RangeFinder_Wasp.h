@@ -24,7 +24,7 @@ protected:
         return 115200;
     }
 
-    MAV_DISTANCE_SENSOR _get_mav_distance_sensor_type() const override {
+    virtual MAV_DISTANCE_SENSOR _get_mav_distance_sensor_type() const override {
         return MAV_DISTANCE_SENSOR_LASER;
     }
 

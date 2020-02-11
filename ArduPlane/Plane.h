@@ -160,6 +160,10 @@ public:
 
     Plane(void);
 
+    // HAL::Callbacks implementation.
+    void setup() override;
+    void loop() override;
+
 private:
 
     // key aircraft parameters passed to multiple libraries
@@ -168,6 +172,9 @@ private:
     // Global parameters are all contained within the 'g' and 'g2' classes.
     Parameters g;
     ParametersG2 g2;
+
+    // main loop scheduler
+    AP_Scheduler scheduler;
 
     // mapping between input channels
     RCMapper rcmap;
@@ -720,6 +727,11 @@ private:
 
     float relative_altitude;
 
+    // INS variables
+    // The main loop execution time.  Seconds
+    // This is the time between calls to the DCM algorithm and is the Integration time for the gyros.
+    float G_Dt = 0.02f;
+
     // loop performance monitoring:
     AP::PerfInfo perf_info;
     struct {
@@ -778,7 +790,7 @@ private:
     void Log_Write_AOA_SSA();
     void Log_Write_AETR();
 
-    void load_parameters(void) override;
+    void load_parameters(void);
     void convert_mixers(void);
     void adjust_altitude_target();
     void setup_glide_slope(void);
@@ -884,10 +896,7 @@ private:
     void read_airspeed(void);
     void rpm_update(void);
     void efi_update(void);
-    void init_ardupilot() override;
-    void get_scheduler_tasks(const AP_Scheduler::Task *&tasks,
-                             uint8_t &task_count,
-                             uint32_t &log_bit) override;
+    void init_ardupilot();
     void startup_ground(void);
     bool set_mode(Mode& new_mode, const ModeReason reason);
     bool set_mode(const uint8_t mode, const ModeReason reason) override;
@@ -1039,6 +1048,7 @@ private:
                   "_failsafe_priorities is missing the sentinel");
 
 public:
+    void mavlink_delay_cb();
     void failsafe_check(void);
 };
 

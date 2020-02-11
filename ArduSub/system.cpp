@@ -7,6 +7,11 @@
 *
 *****************************************************************************/
 
+static void mavlink_delay_cb_static()
+{
+    sub.mavlink_delay_cb();
+}
+
 static void failsafe_check_static()
 {
     sub.mainloop_failsafe_check();
@@ -14,6 +19,17 @@ static void failsafe_check_static()
 
 void Sub::init_ardupilot()
 {
+    // initialise serial port
+    serial_manager.init_console();
+
+    hal.console->printf("\n\nInit %s"
+                        "\n\nFree RAM: %u\n",
+                        AP::fwversion().fw_string,
+                        (unsigned)hal.util->available_memory());
+
+    // load parameters from EEPROM
+    load_parameters();
+
     BoardConfig.init();
 #if HAL_WITH_UAVCAN
     BoardConfig_CAN.init();
@@ -62,7 +78,10 @@ void Sub::init_ardupilot()
 
     barometer.init();
 
-    register_scheduler_delay_callback();
+    // Register the mavlink service callback. This will run
+    // anytime there are more than 5ms remaining in a call to
+    // hal.scheduler->delay.
+    hal.scheduler->register_delay_callback(mavlink_delay_cb_static, 5);
 
     // setup telem slots with serial ports
     gcs().setup_uarts();
@@ -143,19 +162,11 @@ void Sub::init_ardupilot()
         // We only have onboard baro
         // No external underwater depth sensor detected
         barometer.set_primary_baro(0);
-#if HAL_NAVEKF2_AVAILABLE
-        ahrs.EKF2.set_baro_alt_noise(10.0f); // Readings won't correspond with rest of INS
-#endif
-#if HAL_NAVEKF3_AVAILABLE
-        ahrs.EKF3.set_baro_alt_noise(10.0f);
-#endif
+        EKF2.set_baro_alt_noise(10.0f); // Readings won't correspond with rest of INS
+        EKF3.set_baro_alt_noise(10.0f);
     } else {
-#if HAL_NAVEKF2_AVAILABLE
-        ahrs.EKF2.set_baro_alt_noise(0.1f);
-#endif
-#if HAL_NAVEKF3_AVAILABLE
-        ahrs.EKF3.set_baro_alt_noise(0.1f);
-#endif
+        EKF2.set_baro_alt_noise(0.1f);
+        EKF3.set_baro_alt_noise(0.1f);
     }
 
     leak_detector.init();

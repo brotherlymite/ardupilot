@@ -323,10 +323,8 @@ bool Scheduler::thread_create(AP_HAL::MemberProc proc, const char *name, uint32_
     a->stack_size = stack_size;
     a->f[0] = proc;
     a->name = name;
-
-    if (pthread_attr_init(&a->attr) != 0) {
-        goto failed;
-    }
+    
+    pthread_attr_init(&a->attr);
 #if SITL_STACK_CHECKING_ENABLED
     if (pthread_attr_setstack(&a->attr, a->stack, alloc_stack) != 0) {
         AP_HAL::panic("Failed to set stack of size %u for thread %s", alloc_stack, name);

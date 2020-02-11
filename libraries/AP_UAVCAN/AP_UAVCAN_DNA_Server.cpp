@@ -258,8 +258,6 @@ bool AP_UAVCAN_DNA_Server::init(AP_UAVCAN *ap_uavcan)
         return false;
     }
 
-    WITH_SEMAPHORE(sem);
-
     //Read the details from ap_uavcan
     uavcan::Node<0>* _node = ap_uavcan->get_node();
     uint8_t node_id = _node->getNodeID().get();
@@ -420,8 +418,6 @@ seen list, So that we can raise issue if there are duplicates
 on the bus. */
 void AP_UAVCAN_DNA_Server::verify_nodes(AP_UAVCAN *ap_uavcan)
 {
-    WITH_SEMAPHORE(sem);
-
     uint32_t now = AP_HAL::millis();
     if ((now - last_verification_request) < 5000) {
         return;
@@ -472,7 +468,6 @@ void AP_UAVCAN_DNA_Server::handleNodeStatus(uint8_t node_id, const NodeStatusCb 
     if (node_id > MAX_NODE_ID) {
         return;
     }
-    WITH_SEMAPHORE(sem);
     if (!isNodeIDVerified(node_id)) {
         //immediately begin verification of the node_id
         for (uint8_t i = 0; i < MAX_NUMBER_OF_CAN_DRIVERS; i++) {
@@ -507,7 +502,6 @@ void AP_UAVCAN_DNA_Server::handleNodeInfo(uint8_t node_id, uint8_t unique_id[], 
     if (node_id > MAX_NODE_ID) {
         return;
     }
-    WITH_SEMAPHORE(sem);
     if (isNodeIDOccupied(node_id)) {
         //if node_id already registered, just verify if Unique ID matches as well
         if (node_id == getNodeIDForUniqueID(unique_id, 16)) {
@@ -564,7 +558,6 @@ void AP_UAVCAN_DNA_Server::handleAllocation(uint8_t driver_index, uint8_t node_i
         //init has not been called for this driver.
         return;
     }
-    WITH_SEMAPHORE(sem);
     if (!cb.msg->isAnonymousTransfer()) {
         //Ignore Allocation messages that are not DNA requests
         return;

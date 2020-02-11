@@ -49,7 +49,6 @@ const AP_Param::GroupInfo OpticalFlow::var_info[] = {
     // @Param: _ORIENT_YAW
     // @DisplayName: Flow sensor yaw alignment
     // @Description: Specifies the number of centi-degrees that the flow sensor is yawed relative to the vehicle. A sensor with its X-axis pointing to the right of the vehicle X axis has a positive yaw angle.
-    // @Units: cdeg
     // @Range: -18000 +18000
     // @Increment: 1
     // @User: Standard
@@ -59,24 +58,21 @@ const AP_Param::GroupInfo OpticalFlow::var_info[] = {
     // @DisplayName:  X position offset
     // @Description: X position of the optical flow sensor focal point in body frame. Positive X is forward of the origin.
     // @Units: m
-    // @Range: -5 5
-    // @Increment: 0.01
+    // @Range: -10 10
     // @User: Advanced
 
     // @Param: _POS_Y
     // @DisplayName: Y position offset
     // @Description: Y position of the optical flow sensor focal point in body frame. Positive Y is to the right of the origin.
     // @Units: m
-    // @Range: -5 5
-    // @Increment: 0.01
+    // @Range: -10 10
     // @User: Advanced
 
     // @Param: _POS_Z
     // @DisplayName: Z position offset
     // @Description: Z position of the optical flow sensor focal point in body frame. Positive Z is down from the origin.
     // @Units: m
-    // @Range: -5 5
-    // @Increment: 0.01
+    // @Range: -10 10
     // @User: Advanced
     AP_GROUPINFO("_POS", 4, OpticalFlow, _pos_offset, 0.0f),
 

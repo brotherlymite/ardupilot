@@ -143,7 +143,6 @@ class AutoTestTracker(AutoTest):
     def disabled_tests(self):
         return {
             "ArmFeatures": "See https://github.com/ArduPilot/ardupilot/issues/10652",
-            "Parameters": "reboot does not work",
         }
 
     def tests(self):

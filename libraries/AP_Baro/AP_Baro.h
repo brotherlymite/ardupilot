@@ -255,7 +255,7 @@ private:
     AP_Int32                           _baro_probe_ext;
 
     // semaphore for API access from threads
-    HAL_Semaphore                      _rsem;
+    HAL_Semaphore_Recursive            _rsem;
 };
 
 namespace AP {

@@ -104,7 +104,7 @@ public:
     // developer debugging by setting BRD_IO_ENABLE=100 to avoid the
     // crc check of IO firmware on startup
     static uint8_t io_enabled(void) {
-#if HAL_WITH_IO_MCU
+#if AP_FEATURE_BOARD_DETECT
         return _singleton?uint8_t(_singleton->state.io_enable.get()):0;
 #else
         return 0;

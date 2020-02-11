@@ -351,10 +351,8 @@ public:
     AP_Int8 loit_type;
     AP_Float loit_radius;
 
-#if HAL_SPRAYER_ENABLED
     // Sprayer
     AC_Sprayer sprayer;
-#endif
 
 #if GRIPPER_ENABLED
     AP_Gripper gripper;

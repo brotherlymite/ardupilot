@@ -31,7 +31,6 @@ known_param_fields = [
              'Bitmask',
              'Volatile',
              'ReadOnly',
-             'Calibration',
                       ]
 
 # Follow SI units conventions from:

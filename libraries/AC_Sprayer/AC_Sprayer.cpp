@@ -1,7 +1,5 @@
 #include "AC_Sprayer.h"
 
-#if HAL_SPRAYER_ENABLED
-
 #include <AP_AHRS/AP_AHRS.h>
 #include <AP_HAL/AP_HAL.h>
 #include <AP_Math/AP_Math.h>
@@ -200,4 +198,3 @@ AC_Sprayer *sprayer()
 }
 
 };
-#endif // HAL_SPRAYER_ENABLED

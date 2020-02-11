@@ -82,8 +82,6 @@ class AP_UAVCAN_DNA_Server
     //Look in the storage and check if there's a valid Server Record there
     bool isValidNodeDataAvailable(uint8_t node_id);
 
-    HAL_Semaphore sem;
-
 public:
     AP_UAVCAN_DNA_Server(StorageAccess _storage) : storage(_storage) {}
 

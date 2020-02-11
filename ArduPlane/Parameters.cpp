@@ -1049,17 +1049,13 @@ const AP_Param::Info Plane::var_info[] = {
     GOBJECT(rally,  "RALLY_",       AP_Rally),
 
 #if AP_AHRS_NAVEKF_AVAILABLE
-#if HAL_NAVEKF2_AVAILABLE
     // @Group: EK2_
     // @Path: ../libraries/AP_NavEKF2/AP_NavEKF2.cpp
-    GOBJECTN(ahrs.EKF2, NavEKF2, "EK2_", NavEKF2),
-#endif
+    GOBJECTN(EKF2, NavEKF2, "EK2_", NavEKF2),
 
-#if HAL_NAVEKF3_AVAILABLE
     // @Group: EK3_
     // @Path: ../libraries/AP_NavEKF3/AP_NavEKF3.cpp
-    GOBJECTN(ahrs.EKF3, NavEKF3, "EK3_", NavEKF3),
-#endif
+    GOBJECTN(EKF3, NavEKF3, "EK3_", NavEKF3),
 #endif
 
     // @Group: RPM

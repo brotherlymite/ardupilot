@@ -136,7 +136,9 @@ bool AP_BoardConfig::spi_check_register(const char *devname, uint8_t regnum, uin
         return false;
     }
     dev->set_read_flag(read_flag);
-    dev->get_semaphore()->take_blocking();
+    if (!dev->get_semaphore()->take(HAL_SEMAPHORE_BLOCK_FOREVER)) {
+        return false;
+    }
     uint8_t v;
     if (!dev->read_registers(regnum, &v, 1)) {
 #if SPI_PROBE_DEBUG
@@ -164,10 +166,9 @@ static bool check_ms5611(const char* devname) {
 
     AP_HAL::Semaphore *dev_sem = dev->get_semaphore();
 
-    if (!dev_sem) {
+    if (!dev_sem || !dev_sem->take(HAL_SEMAPHORE_BLOCK_FOREVER)) {
         return false;
     }
-    dev_sem->take_blocking();
 
     static const uint8_t CMD_MS56XX_RESET = 0x1E;
     static const uint8_t CMD_MS56XX_PROM = 0xA0;

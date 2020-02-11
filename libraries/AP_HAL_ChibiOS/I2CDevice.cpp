@@ -258,10 +258,7 @@ bool I2CDevice::_transfer(const uint8_t *send, uint32_t send_len,
 {
     i2cAcquireBus(I2CD[bus.busnum].i2c);
 
-    if (!bus.bouncebuffer_setup(send, send_len, recv, recv_len)) {
-        i2cReleaseBus(I2CD[bus.busnum].i2c);
-        return false;
-    }
+    bus.bouncebuffer_setup(send, send_len, recv, recv_len);
 
     for(uint8_t i=0 ; i <= _retries; i++) {
         int ret;

@@ -42,7 +42,6 @@ public:
 
     void init(EICUDriver* icu_drv, eicuchannel_t chan);
     bool read(uint32_t &widths0, uint32_t &widths1);
-    void disable(void);
 private:
     // singleton
     static SoftSigReaderInt *_singleton;

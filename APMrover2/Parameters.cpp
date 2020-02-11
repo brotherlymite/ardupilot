@@ -332,17 +332,13 @@ const AP_Param::Info Rover::var_info[] = {
     GOBJECT(gps, "GPS_", AP_GPS),
 
 #if AP_AHRS_NAVEKF_AVAILABLE
-#if HAL_NAVEKF2_AVAILABLE
     // @Group: EK2_
     // @Path: ../libraries/AP_NavEKF2/AP_NavEKF2.cpp
-    GOBJECTN(ahrs.EKF2, NavEKF2, "EK2_", NavEKF2),
-#endif
+    GOBJECTN(EKF2, NavEKF2, "EK2_", NavEKF2),
 
-#if HAL_NAVEKF3_AVAILABLE
     // @Group: EK3_
     // @Path: ../libraries/AP_NavEKF3/AP_NavEKF3.cpp
-    GOBJECTN(ahrs.EKF3, NavEKF3, "EK3_", NavEKF3),
-#endif
+    GOBJECTN(EKF3, NavEKF3, "EK3_", NavEKF3),
 #endif
 
     // @Group: RPM
@@ -523,11 +519,9 @@ const AP_Param::GroupInfo ParametersG2::var_info[] = {
     // @User: Standard
     AP_GROUPINFO("LOIT_TYPE", 25, ParametersG2, loit_type, 0),
 
-#if HAL_SPRAYER_ENABLED
     // @Group: SPRAYER_
     // @Path: ../libraries/AC_Sprayer/AC_Sprayer.cpp
     AP_SUBGROUPINFO(sprayer, "SPRAY_", 26, ParametersG2, AC_Sprayer),
-#endif
 
     // @Group: WRC
     // @Path: ../libraries/AP_WheelEncoder/AP_WheelRateControl.cpp

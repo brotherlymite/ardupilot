@@ -68,7 +68,9 @@ bool AP_Airspeed_SDP3X::init()
         if (!_dev) {
             continue;
         }
-        _dev->get_semaphore()->take_blocking();
+        if (!_dev->get_semaphore()->take(HAL_SEMAPHORE_BLOCK_FOREVER)) {
+            continue;
+        }
 
         // lots of retries during probe
         _dev->set_retries(10);
@@ -82,7 +84,9 @@ bool AP_Airspeed_SDP3X::init()
         // these delays are needed for reliable operation
         _dev->get_semaphore()->give();
         hal.scheduler->delay_microseconds(20000);
-        _dev->get_semaphore()->take_blocking();
+        if (!_dev->get_semaphore()->take(HAL_SEMAPHORE_BLOCK_FOREVER)) {
+            continue;
+        }
 
         // start continuous average mode
         if (!_send_command(SDP3X_CONT_MEAS_AVG_MODE)) {
@@ -93,7 +97,9 @@ bool AP_Airspeed_SDP3X::init()
         // these delays are needed for reliable operation
         _dev->get_semaphore()->give();
         hal.scheduler->delay_microseconds(20000);
-        _dev->get_semaphore()->take_blocking();
+        if (!_dev->get_semaphore()->take(HAL_SEMAPHORE_BLOCK_FOREVER)) {
+            continue;
+        }
 
         // step 3 - get scale
         uint8_t val[9];

@@ -546,17 +546,13 @@ const AP_Param::Info Sub::var_info[] = {
     GOBJECT(rcmap, "RCMAP_",        RCMapper),
 #endif
 
-#if HAL_NAVEKF2_AVAILABLE
     // @Group: EK2_
     // @Path: ../libraries/AP_NavEKF2/AP_NavEKF2.cpp
-    GOBJECTN(ahrs.EKF2, NavEKF2, "EK2_", NavEKF2),
-#endif
+    GOBJECTN(EKF2, NavEKF2, "EK2_", NavEKF2),
 
-#if HAL_NAVEKF3_AVAILABLE
     // @Group: EK3_
     // @Path: ../libraries/AP_NavEKF3/AP_NavEKF3.cpp
-    GOBJECTN(ahrs.EKF3, NavEKF3, "EK3_", NavEKF3),
-#endif
+    GOBJECTN(EKF3, NavEKF3, "EK3_", NavEKF3),
 
     // @Group: MIS_
     // @Path: ../libraries/AP_Mission/AP_Mission.cpp
@@ -697,11 +693,9 @@ void Sub::load_parameters()
     AP_Param::set_default_by_name("INS_GYR_CAL", 0);
     AP_Param::set_default_by_name("MNT_DEFLT_MODE", MAV_MOUNT_MODE_RC_TARGETING);
     AP_Param::set_default_by_name("MNT_JSTICK_SPD", 100);
-    AP_Param::set_default_by_name("RNGFND1_TYPE", (uint8_t)RangeFinder::Type::MAVLink);
     AP_Param::set_by_name("MNT_RC_IN_PAN", 7);
     AP_Param::set_by_name("MNT_RC_IN_TILT", 8);
-    // We should ignore this parameter since ROVs are neutral buoyancy
-    AP_Param::set_by_name("MOT_THST_HOVER", 0.5);
+    AP_Param::set_default_by_name("RNGFND1_TYPE", (uint8_t)RangeFinder::Type::MAVLink);
 }
 
 void Sub::convert_old_parameters()

@@ -30,7 +30,7 @@
 
 - Github repository: <https://github.com/ArduPilot/ardupilot>
 
-- Main developer wiki: <https://ardupilot.org/dev/>
+- Main developer wiki: <https://dev.ardupilot.org>
 
 - Developer discussion: <https://discuss.ardupilot.org>
 

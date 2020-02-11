@@ -131,10 +131,9 @@ void AP_Baro_DPS280::set_config_registers(void)
 
 bool AP_Baro_DPS280::init()
 {
-    if (!dev) {
+    if (!dev || !dev->get_semaphore()->take(HAL_SEMAPHORE_BLOCK_FOREVER)) {
         return false;
     }
-    dev->get_semaphore()->take_blocking();
 
     // setup to allow reads on SPI
     if (dev->bus_type() == AP_HAL::Device::BUS_TYPE_SPI) {

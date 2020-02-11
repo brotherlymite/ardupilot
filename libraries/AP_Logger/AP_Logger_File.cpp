@@ -689,6 +689,31 @@ int16_t AP_Logger_File::get_log_data(const uint16_t list_entry, const uint16_t p
     }
     uint32_t ofs = page * (uint32_t)LOGGER_PAGE_SIZE + offset;
 
+    /*
+      this rather strange bit of code is here to work around a bug
+      in file offsets in NuttX. Every few hundred blocks of reads
+      (starting at around 350k into a file) NuttX will get the
+      wrong offset for sequential reads. The offset it gets is
+      typically 128k earlier than it should be. It turns out that
+      calling lseek() with 0 offset and SEEK_CUR works around the
+      bug. We can remove this once we find the real bug.
+    */
+    if (ofs / 4096 != (ofs+len) / 4096) {
+        off_t seek_current = AP::FS().lseek(_read_fd, 0, SEEK_CUR);
+        if (seek_current == (off_t)-1) {
+            AP::FS().close(_read_fd);
+            _read_fd = -1;
+            return -1;
+        }
+        if (seek_current != (off_t)_read_offset) {
+            if (AP::FS().lseek(_read_fd, _read_offset, SEEK_SET) == (off_t)-1) {
+                AP::FS().close(_read_fd);
+                _read_fd = -1;
+                return -1;
+            }
+        }
+    }
+
     if (ofs != _read_offset) {
         if (AP::FS().lseek(_read_fd, ofs, SEEK_SET) == (off_t)-1) {
             AP::FS().close(_read_fd);
@@ -776,7 +801,7 @@ void AP_Logger_File::PrepForArming()
 /*
   start writing to a new log file
  */
-void AP_Logger_File::start_new_log(void)
+uint16_t AP_Logger_File::start_new_log(void)
 {
     stop_logging();
 
@@ -785,7 +810,7 @@ void AP_Logger_File::start_new_log(void)
     if (_open_error) {
         // we have previously failed to open a file - don't try again
         // to prevent us trying to open files while in flight
-        return;
+        return 0xFFFF;
     }
 
     if (_read_fd != -1) {
@@ -796,7 +821,7 @@ void AP_Logger_File::start_new_log(void)
     if (disk_space_avail() < _free_space_min_avail && disk_space() > 0) {
         hal.console->printf("Out of space for logging\n");
         _open_error = true;
-        return;
+        return 0xffff;
     }
 
     uint16_t log_num = find_last_log();
@@ -809,7 +834,7 @@ void AP_Logger_File::start_new_log(void)
     }
     if (!write_fd_semaphore.take(1)) {
         _open_error = true;
-        return;
+        return 0xFFFF;
     }
     if (_write_filename) {
         free(_write_filename);
@@ -819,7 +844,7 @@ void AP_Logger_File::start_new_log(void)
     if (_write_filename == nullptr) {
         _open_error = true;
         write_fd_semaphore.give();
-        return;
+        return 0xFFFF;
     }
 
 #if CONFIG_HAL_BOARD == HAL_BOARD_CHIBIOS
@@ -841,7 +866,7 @@ void AP_Logger_File::start_new_log(void)
                  _write_filename, strerror(saved_errno));
         hal.console->printf("Log open fail for %s - %s\n",
                             _write_filename, strerror(saved_errno));
-        return;
+        return 0xFFFF;
     }
     _last_write_ms = AP_HAL::millis();
     _write_offset = 0;
@@ -858,7 +883,7 @@ void AP_Logger_File::start_new_log(void)
     free(fname);
     if (fd == -1) {
         _open_error = true;
-        return;
+        return 0xFFFF;
     }
 
     char buf[30];
@@ -869,10 +894,10 @@ void AP_Logger_File::start_new_log(void)
 
     if (written < to_write) {
         _open_error = true;
-        return;
+        return 0xFFFF;
     }
 
-    return;
+    return log_num;
 }
 
 

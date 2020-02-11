@@ -39,11 +39,7 @@
   maximum size of embedded parameter file
  */
 #ifndef AP_PARAM_MAX_EMBEDDED_PARAM
-#if HAL_MINIMIZE_FEATURES
-# define AP_PARAM_MAX_EMBEDDED_PARAM 1024
-#else
-# define AP_PARAM_MAX_EMBEDDED_PARAM 8192
-#endif
+#define AP_PARAM_MAX_EMBEDDED_PARAM 8192
 #endif
 
 /*

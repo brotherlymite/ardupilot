@@ -331,13 +331,9 @@ is bob we will attempt to checkout bob-AVR'''
         self.progress("Building %s %s binaries (cwd=%s)" %
                       (vehicle, tag, os.getcwd()))
 
-        board_count = len(boards)
-        count = 0
-        for board in sorted(boards, key=str.lower):
+        for board in boards:
             now = datetime.datetime.now()
-            count += 1
-            self.progress("[%u/%u] Building board: %s at %s" %
-                          (count, board_count, board, str(now)))
+            self.progress("Building board: %s at %s" % (board, str(now)))
             for frame in frames:
                 if frame is not None:
                     self.progress("Considering frame %s for board %s" %
@@ -570,7 +566,6 @@ is bob we will attempt to checkout bob-AVR'''
                 "mRoControlZeroF7",
                 "F35Lightning",
                 "speedybeef4",
-                "SuccexF4",
                 "DrotekP3Pro",
                 "VRBrain-v51",
                 "VRBrain-v52",
@@ -581,7 +576,6 @@ is bob we will attempt to checkout bob-AVR'''
                 "Durandal",
                 "CubeOrange",
                 "CubeYellow",
-                "R9Pilot",
                 # SITL targets
                 "SITL_x86_64_linux_gnu",
                 "SITL_arm_linux_gnueabihf",
@@ -593,7 +587,6 @@ is bob we will attempt to checkout bob-AVR'''
                 "f103-ADSB",
                 "f103-RangeFinder",
                 "f303-GPS",
-                "f303-Universal",
                 "CUAV_GPS",
                 "ZubaxGNSS",
                 ]

@@ -142,7 +142,10 @@ bool AP_Compass_BMM150::init()
     uint8_t val = 0;
     bool ret;
 
-    _dev->get_semaphore()->take_blocking();
+    if (!_dev->get_semaphore()->take(HAL_SEMAPHORE_BLOCK_FOREVER)) {
+        hal.console->printf("BMM150: Unable to get bus semaphore\n");
+        return false;
+    }
 
     // 10 retries for init
     _dev->set_retries(10);

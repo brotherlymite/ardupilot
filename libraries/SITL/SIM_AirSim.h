@@ -43,21 +43,12 @@ public:
     void set_interface_ports(const char* address, const int port_in, const int port_out) override;
 
 private:
-    enum class OutputType {
-        Copter = 1,
-        Rover = 2
-    } output_type;
+	/*
+		rotor control packet sent by Ardupilot
+	*/
+	static const int kArduCopterRotorControlCount = 11;
 
-    // Control packet for Rover
-    struct rover_packet {
-        float throttle;     // -1 to 1
-        float steering;     // -1 to 1
-    };
-
-    // rotor control packet sent by Ardupilot
-    static const int kArduCopterRotorControlCount = 11;
-
-    struct servo_packet {
+	struct servo_packet {
 		uint16_t pwm[kArduCopterRotorControlCount];
 	};
 
@@ -77,9 +68,8 @@ private:
     uint64_t last_frame_count;
     uint64_t last_timestamp;
 
-    void output_copter(const struct sitl_input &input);
-    void output_rover(const struct sitl_input &input);
-    void recv_fdm();
+	void send_servos(const struct sitl_input &input);
+	void recv_fdm();
     void report_FPS(void);
 
 	bool parse_sensors(const char *json);

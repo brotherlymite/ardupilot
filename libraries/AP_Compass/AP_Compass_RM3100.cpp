@@ -93,7 +93,9 @@ AP_Compass_RM3100::AP_Compass_RM3100(AP_HAL::OwnPtr<AP_HAL::Device> _dev,
 
 bool AP_Compass_RM3100::init()
 {
-    dev->get_semaphore()->take_blocking();
+    if (!dev->get_semaphore()->take(HAL_SEMAPHORE_BLOCK_FOREVER)) {
+        return false;
+    }
 
     if (dev->bus_type() == AP_HAL::Device::BUS_TYPE_SPI) {
         // read has high bit set for SPI

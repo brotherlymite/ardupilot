@@ -20,10 +20,7 @@
  */
 
 #include <AP_HAL/AP_HAL.h>
-#include <AP_Vehicle/AP_Vehicle_Type.h>
-
 #include "StorageManager.h"
-
 #include <stdio.h>
 
 
@@ -38,18 +35,17 @@ extern const AP_HAL::HAL& hal;
 /*
   layout for peripherals
  */
-const StorageManager::StorageArea StorageManager::layout[STORAGE_NUM_AREAS] = {
+const StorageManager::StorageArea StorageManager::layout_default[STORAGE_NUM_AREAS] = {
     { StorageParam,   0,     HAL_STORAGE_SIZE}
 };
 
-#elif !APM_BUILD_TYPE(APM_BUILD_ArduCopter)
-
+#else
 /*
   layout for fixed wing and rovers
   On PX4v1 this gives 309 waypoints, 30 rally points and 52 fence points
   On Pixhawk this gives 724 waypoints, 50 rally points and 84 fence points
  */
-const StorageManager::StorageArea StorageManager::layout[STORAGE_NUM_AREAS] = {
+const StorageManager::StorageArea StorageManager::layout_default[STORAGE_NUM_AREAS] = {
     { StorageParam,   0,     1280}, // 0x500 parameter bytes
     { StorageMission, 1280,  2506},
     { StorageRally,   3786,   150}, // 10 rally points
@@ -75,14 +71,12 @@ const StorageManager::StorageArea StorageManager::layout[STORAGE_NUM_AREAS] = {
 #endif
 };
 
-#else
-
 /*
   layout for copter.
   On PX4v1 this gives 303 waypoints, 26 rally points and 38 fence points
   On Pixhawk this gives 718 waypoints, 46 rally points and 70 fence points
  */
-const StorageManager::StorageArea StorageManager::layout[STORAGE_NUM_AREAS] = {
+const StorageManager::StorageArea StorageManager::layout_copter[STORAGE_NUM_AREAS] = {
     { StorageParam,   0,     1536}, // 0x600 param bytes
     { StorageMission, 1536,  2422},
     { StorageRally,   3958,    90}, // 6 rally points
@@ -108,6 +102,9 @@ const StorageManager::StorageArea StorageManager::layout[STORAGE_NUM_AREAS] = {
 #endif
 };
 #endif // STORAGE_NUM_AREAS == 1
+
+// setup default layout
+const StorageManager::StorageArea *StorageManager::layout = layout_default;
 
 /*
   erase all storage

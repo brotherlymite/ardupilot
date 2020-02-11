@@ -8,6 +8,12 @@
 *
 *****************************************************************************/
 
+static void mavlink_delay_cb_static()
+{
+    copter.mavlink_delay_cb();
+}
+
+
 static void failsafe_check_static()
 {
     copter.failsafe_check();
@@ -15,6 +21,20 @@ static void failsafe_check_static()
 
 void Copter::init_ardupilot()
 {
+    // initialise serial port
+    serial_manager.init_console();
+
+    hal.console->printf("\n\nInit %s"
+                        "\n\nFree RAM: %u\n",
+                        AP::fwversion().fw_string,
+                        (unsigned)hal.util->available_memory());
+
+    // load parameters from EEPROM
+    load_parameters();
+
+    // time per loop - this gets updated in the main loop() based on
+    // actual loop rate
+    G_Dt = 1.0 / scheduler.get_loop_rate_hz();
 
 #if STATS_ENABLED == ENABLED
     // initialise stats module
@@ -30,8 +50,10 @@ void Copter::init_ardupilot()
     // setup first port early to allow BoardConfig to report errors
     gcs().setup_console();
 
-    register_scheduler_delay_callback();
-
+    // Register mavlink_delay_cb, which will run anytime you have
+    // more than 5ms remaining in your call to hal.scheduler->delay
+    hal.scheduler->register_delay_callback(mavlink_delay_cb_static, 5);
+    
     BoardConfig.init();
 #if HAL_WITH_UAVCAN
     BoardConfig_CAN.init();

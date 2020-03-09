@@ -536,6 +536,8 @@ def build(bld):
     bld.get_board().build(bld)
     _build_common_taskgens(bld)
 
+    bld.recurse('libraries/AP_Scripting/generator')
+
     _build_recursion(bld)
 
     _build_post_funs(bld)
